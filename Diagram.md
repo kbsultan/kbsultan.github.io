@@ -1,3 +1,4 @@
+```markdown
 # Online Food Ordering Process
 
 ```mermaid
@@ -13,7 +14,6 @@ flowchart TD
     G --> I[Restaurant prepares food]
     I --> J[Delivery dispatched]
     J --> K[Customer receives order]
-
 ## Diagram Description
 
 - **A. Customer browses menu**: The user opens the app/website and explores available food items.
@@ -28,3 +28,4 @@ flowchart TD
 - **K. Customer receives order**: Final step where the customer gets their food.
 
 This diagram visualizes a streamlined, user-driven process, highlighting key interactions and decisions that lead to a successful food delivery.
+---
