@@ -1,37 +1,48 @@
-// Fetch grade data from the server
-async function fetchGradeData() {
-  try {
-    const response = await fetch('/grades'); // Calls the server route /grades
-    if (!response.ok) throw new Error('Network response was not ok');
+// Updated fetchGradeData() function
+function fetchGradeData() {
+  console.log("Fetching grade data...");
+  
+  let xhr = new XMLHttpRequest();
+  let apiRoute = "/api/grades";
 
-    const data = await response.json(); // Convert the response to JSON
-    populateGradebook(data); // Fill the table with the data
-  } catch (error) {
-    console.error('Fetch error:', error); // Show any errors in the console
-  }
+  xhr.onreadystatechange = function() {
+    let results;
+    if(xhr.readyState === xhr.DONE) {
+      if(xhr.status !== 200) {
+        console.error(`Could not get grades. Status: ${xhr.status}`);
+        return;
+      }
+      populateGradebook(JSON.parse(xhr.responseText));
+    }
+  }.bind(this);
+
+  xhr.open("get", apiRoute, true);
+  xhr.send();
 }
 
-// Populate the gradebook table with the received data
+// Updated populateGradebook(data) function
 function populateGradebook(data) {
-  const table = document.getElementById('gradebookTable'); // Get the table by ID
-  table.innerHTML = ''; // Clear previous table contents
+  console.log("Populating gradebook with data:", data);
+  let tableElm = document.getElementById("gradebook");
 
-  // Add the table header
-  const headerRow = table.insertRow();
-  ['Name', 'Assignment', 'Grade'].forEach(header => {
-    const th = document.createElement('th');
-    th.textContent = header;
-    headerRow.appendChild(th);
-  });
+  data.forEach(function(assignment){
+    let row = document.createElement("tr");
+    let columns = [];
 
-  // Add rows for each grade entry
-  data.forEach(entry => {
-    const row = table.insertRow();
-    row.insertCell().textContent = entry.name;
-    row.insertCell().textContent = entry.assignment;
-    row.insertCell().textContent = entry.grade;
+    columns.name = document.createElement("td");
+    columns.name.appendChild(
+      document.createTextNode(assignment.last_name + ", " + assignment.first_name)
+    );
+
+    columns.grade = document.createElement("td");
+    columns.grade.appendChild(
+      document.createTextNode(assignment.total_grade)
+    );
+
+    row.appendChild(columns.name);
+    row.appendChild(columns.grade);
+
+    tableElm.appendChild(row);
   });
 }
 
-// Run the fetch function when the script loads
-fetchGradeData();
